@@ -1,0 +1,813 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/league.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h3>
+					Managing state in Angular Apps with ngrx/platform
+				</h3>
+				<img class="plain" data-src="/images/angular-logo.png">
+			</section>
+			<section>
+				<div>
+					<!-- <img style="width:160px" class="plain" data-src="/images/photo3.jpeg"> -->
+					<p>About me:</p>
+					<p>Software Engineer @
+						<a href="http://www.trasysinternational.com/" target="_blank">Trasys</a>
+					</p>
+					<p>
+						<a href="http://stefanos-lignos.com/" target="_blank">stefanos-lignos.com</a>
+					</p>
+					<p>
+						<a href="https://github.com/stefanos-" target="_blank">github</a>
+					</p>
+					<p>
+						<a href="https://twitter.com/stefanos_lig" target="_blank">twitter</a>
+					</p>
+				</div>
+			</section>
+			<section>
+				<h5>
+					What is Application State?
+				</h5>
+			</section>
+			<section>
+				<p>A typical web application has various types of state</p>
+				<img style="width:700px; margin: 0" class="plain" data-src="/images/conduit.png">
+				<img style="width:300px; margin: 0" class="plain" data-src="/images/logo.png">
+				<a class="small" href="https://github.com/gothinkster/realworld" target="_blank">https://github.com/gothinkster/realworld</a>
+			</section>
+			<section>
+				<small>Typical types of state of a web app (Data State)</small>
+				<img style="width: 800px; margin:0" class="plain" data-src="/images/app_console.png">
+				<div data-fragment-index="1" class="fragment fade-up" style="position:absolute;bottom: 33px;left: 90px;width: 464px;height: 77px;border: 2px solid red;">
+					<small style="color: red">Data state</small>
+				</div>
+				<div data-fragment-index="2" class="fragment fade-up" style="position: absolute;bottom: 172px;left: 90px;width: 200px;height: 200px;border: 2px solid red;">
+					<small style="color: red">Data state</small>
+				</div>
+			</section>
+			<section>
+				<small>Typical types of state of a web app (Communication state)</small>
+				<div class="flex-row">
+					<img style="height: 500px; margin-right:15px" class="plain" data-src="/images/com_state.png">
+					<div data-fragment-index="1" class="fragment fade-up" style="position:absolute;top: 130px;
+					left: 90px;
+					width: 400px;
+					height: 50px;
+					border: 2px solid red">
+						<small style="color: red">Communication state</small>
+					</div>
+					<img style="height: 500px; margin-left:15px" class="plain" data-src="/images/com_state2.png">
+					<div data-fragment-index="2" class="fragment fade-up" style="position:absolute;top: 300px;
+					right: 70px;
+					width: 339px;
+					height: 77px;
+					border: 2px solid red;">
+						<small style="color: red">Communication state</small>
+					</div>
+				</div>
+			</section>
+			<section>
+				<small>Typical types of state of a web app (Control state, Session state, Location state)</small>
+				<img style="width: 800px; margin:0" class="plain" data-src="/images/app_console.png">
+				<div data-fragment-index="1" class="fragment fade-up" style="position:absolute;top: 250px;
+				left: 90px;
+				width: 464px;
+				height: 60px;
+				border: 2px solid red;">
+					<small style="color: red">Control state</small>
+				</div>
+				<div data-fragment-index="1" class="fragment fade-up" style="position:absolute;top: 250px;
+					right: 270px;
+					width: 100px;
+					height: 200px;
+					border: 2px solid red;">
+					<small style="color: red">Control state</small>
+				</div>
+				<div data-fragment-index="2" class="fragment fade-up" style="position:absolute;top: 60px;
+				right: 90px;
+				width: 200px;
+				height: 77px;
+				border: 2px solid red;">
+					<small style="color: red">Session state</small>
+				</div>
+				<div data-fragment-index="3" class="fragment fade-up" style="position: absolute;top: 50px;
+				left: 215px;
+				width: 464px;
+				height: 48px;
+				border: 2px solid red;">
+					<small style="color: red">Location state</small>
+				</div>
+			</section>
+			<!-- <section>
+				<h3>
+					A brief history of web apps
+				</h3>
+				<ul>
+					<li data-fragment-index="0" class="fragment">
+						<b style="color: #13daec">... - 2005:</b> Stateless web apps (click-wait-click-wait)</li>
+					<li data-fragment-index="1" class="fragment">
+						<b style="color: #13daec">2005:</b> Ajax: A New Approach to Web Applications (first glimpse of the componentization of the web)</li>
+					<li data-fragment-index="2" class="fragment">
+						<b style="color: #13daec">2008:</b> Chrome - V8 Engine</li>
+					<li data-fragment-index="3" class="fragment">
+						<b style="color: #13daec">2010:</b> The Rise of JavaScript Frameworks. Backbone, Ember.js, Knockout, AngularJS jumped out (MV*).</li>
+					<li data-fragment-index="4" class="fragment">
+						<b style="color: #13daec">2014:</b> Facebook: “MVC doesn’t scale”.</li>
+				</ul>
+			</section> -->
+			<section>
+				<section>
+					<h5>Flux</h5>
+					<img class="plain" style="width: 670px" data-src="/images/flux-arch.png">
+					<small>
+						<ul>
+							<li>MVC design pattern does not put any constraint when it comes to flow of direction of data between Model, View and
+								Controller
+							</li>
+							<li>Dispatcher is a single-point-of-emission for all actions in a flux application. The action is sent from the dispatcher
+								to stores, which update themselves in response to the action</li>
+							<li>Stores manage the application state for a particular domain within the application.After the stores are updated, they
+								broadcast an event declaring that their state has changed, so the views may query the new state and update themselves.</li>
+							<li>Views listen for changes from the stores and re-render themselves appropriately.</li>
+							<li>Actions are simple objects with a type property and some data.</li>
+						</ul>
+					</small>
+				</section>
+				<section>
+					<h5>
+						MVC doesn’t scale
+					</h5>
+					<div class="flex-row">
+						<div class="flex-column">
+							<img style="height:250px; margin-right: 10px" class="plain" data-src="/images/facebook-bug.png">
+						</div>
+						<img style="height:250px; margin-left: 10px" class="plain" data-src="/images/mvc_doesnt_scale.png">
+					</div>
+					<blockquote>
+						<small>
+							&ldquo;Yeah, that was a tricky slide [the one with multiple models and views and bidirectional data flow], partly because
+							there's not a lot of consensus for what MVC is exactly - lots of people have different ideas about what it is. What
+							we're really arguing against is bi-directional data flow, where one change can loop back and have cascading effects.&rdquo;
+						</small>
+					</blockquote>
+				</section>
+			</section>
+			<section>
+				<h5>Redux</h5>
+				<small>
+					<ul>
+						<li>Like in Flux, in Redux data flow is unidirectional</li>
+						<li>Unlike Flux, there is a single store in Redux. Store is immutable. Every time a new object tree is created with data
+							from the previous state plus what is changed</li>
+						<li>The change is performed by reducers which are pure functions with no side effects</li>
+						<li>No central Dispatcher in Redux. When an action needs to be executed then the dispatch() method of the store is called,
+							passing the action as parameter. Then all listeners are informed the state has changed</li>
+					</ul>
+				</small>
+				<img class="plain" style="width: 650px" data-src="/images/redux.png">
+			</section>
+			<section>
+				<h5>Redux implementation</h5>
+				<h5 data-fragment-index="0" class="fragment">In 15 lines of code with RxJS</h5>
+			</section>
+			<section>
+				<h5>Redux-like implementation with RxJS</h5>
+				<pre><code class="hljs typescript" style="font-size: 18px; tab-size: 2;" data-noescape data-trim contenteditable>
+@Injectable()
+export class Store<T> extends BehaviorSubject<T> {
+
+	constructor(private dispatcher, private reducer, private initialState) {
+		super(initialState);
+		this.dispatcher.pipe(
+			tap(val => console.log('ACTION: ', val)),
+			scan((state, action) => this.reducer(state, action), initialState),
+			tap(val => console.log('STATE: ', val)),
+		).subscribe(state => super.next(state));
+	}
+
+	dispatch(action: any) {
+		this.dispatcher.dispatch(action);
+	}
+
+	select(key: string) {
+		return this.pipe(map(state => state[key]));
+	}
+}
+
+export class Dispatcher extends Subject<Action> {
+	dispatch(action: Action): void {
+		this.next(action);
+	}
+}
+					</code></pre>
+			</section>
+			<section>
+				<h5>RxJS: The Basics</h5>
+				<small>
+					RxJS is a library for reactive programming using Observables. In reactive programming the fundamental unit of work is the
+					stream. Streams are nothing more than a sequence of events(mouse clicks, key presses, bits of network data) over time.
+					<img width="650px" class="plain" data-src="/images/stream.png">
+
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+							Stream(loadMagazineEveryMonth$).pipe(
+								filter(magazine => magazine.month === 'April')
+							).subscribe(magazine => console.log(magazine.news));
+
+							<span data-fragment-index="0" class="fragment">// What: I want to retrieve only the April edition.</span>
+							<span data-fragment-index="1" class="fragment">// How: I don't care..</span>
+						</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>RxJS: The Basics</h5>
+				<small>
+					<ul>
+						<li>
+							RxJS is a JavaScript implementation of the Reactive Extensions. Rx is a reactive programming model originally created at
+							Microsoft. Instead of streams in RxJS the main entity is the Observables
+						</li>
+						<pre><code class="hljs typescript" style="tab-size: 2;font-size: 20px;" data-noescape data-trim contenteditable>
+								Observable {
+									producer => events
+									push values => consumer(observer)
+									unsubscribe();
+								}
+							</code></pre>
+						<li> RxJS is mostly about Observables and Observers… but it’s also about Subjects.</li>
+						<pre><code class="hljs typescript" style="tab-size: 2;font-size: 20px;" data-noescape data-trim contenteditable>
+									Subject {
+										producer => events
+										push values => list of consumers(observers)
+										unsubscribe();
+										next(); complete(); error(); // can be both Observable and Observer
+									}
+							</code></pre>
+						<li>
+							While plain Observables are unicast (each subscribed Observer owns an independent execution of the Observable), Subjects
+							are multicast. Values can be multicasted to many Observers.
+						</li>
+						<li>
+							Because of this and because of its twofold nature, Subject and BehaviourSubject are the best candidates for our store implementation.
+						</li>
+					</ul>
+				</small>
+				<p style="font-size:medium; text-align: left;">
+					Must read:
+					<a href="https://medium.com/@benlesh/learning-observable-by-building-observable-d5da57405d87">Learning Observable By Building Observable</a>
+					/
+					<a href="https://medium.com/@benlesh/on-the-subject-of-subjects-in-rxjs-2b08b7198b93">On The Subject Of Subjects</a>
+					(Ben Lesh)
+				</p>
+			</section>
+			<section>
+				<h5>Redux-like store with rxjs
+					<a href="https://stefanos-.github.io/redux-in-fifteen-lines-with-rxjs/" target="_blank">DEMO</a>
+				</h5>
+				<h5>
+					<a href="https://github.com/stefanos-/redux-in-fifteen-lines-with-rxjs" target="_blank">Github repo</a>
+				</h5>
+			</section>
+			<section>
+				<h5>Demo Architecture</h5>
+				<img class="plain" data-src="/images/first-demo-arch.png">
+				<small>
+					<ul>
+						<li>
+							Angular uses Zone.js internally to trigger change detection on every browser event or http request or setTimeout or observable
+							emission, etc.
+						</li>
+						<li>
+							The default change detection mechanism compares ('===') the current value with the previous value for each expression used
+							in template for every component.
+						</li>
+						<li>
+							But, if a component depends only on its inputs, we can instruct angular to trigger change detection only if one of its inputs
+							has changed (ChangeDetectionStrategy.OnPush).
+						</li>
+						<li>
+							This requires immutable input properties
+						</li>
+					</ul>
+				</small>
+			</section>
+			<section>
+				<h5>ngrx/platform</h5>
+				<small>ngrx/platform is a monorepo that consists of the following libs:</small>
+				<small>
+					<ul>
+						<li>
+							<b>@ngrx/store</b> - The core lib that gives us the tools to maintain state and dispatch actions.
+						</li>
+						<li>
+							<b>@ngrx/schematics</b> - Automates NgRx code generation. Scaffolding library that helps you generate files and code.
+							Time-saver.
+						</li>
+						<li>
+							<b>@ngrx/effects</b> - Handles external interactions such as, network requests, web socket messages and time-based events.
+							Isolates side effects from components.
+						</li>
+						<li>
+							<b>@ngrx/router-store</b> - Integrates NgRx with the Angular routing.
+						</li>
+						<li>
+							<b>@ngrx/store-devtools</b> - Tool for NgRx debugging (time travel debugging functionality).
+						</li>
+						<li>
+							<b>@ngrx/entity</b> - Provides an API to manipulate and query entity collections
+						</li>
+					</ul>
+				</small>
+			</section>
+			<section>
+				<h5>OUR SECOND
+					<a href="https://stefanos-.github.io/angular-ngrx-nx-realworld-example-app/#/" target="_blank">DEMO</a>
+				</h5>
+				<h5>
+					<a href="https://github.com/stefanos-/angular-ngrx-nx-realworld-example-app" target="_blank">Github repo</a>
+				</h5>
+			</section>
+			<section>
+				<small>
+					<div class="flex-row">
+						<div style="width:30%; margin-right: 2em;">
+							<img class="plain" data-src="/images/structure.png">
+						</div>
+						<div style="width:70%;">
+							For this demo we used the nrwl/nx tool. Nrwl/nx is built on top of angular-cli and provides an opinionated approach to application
+							project structure and patterns. Has adopted a monorepo approach
+						</div>
+					</div>
+				</small>
+			</section>
+			<section>
+				<section>
+					<h5>Project setup</h5>
+					<small>
+						<ol>
+							<li>
+								<div>Install required libs</div>
+								<div>npm install @ngrx/store --save</div>
+								<div>npm install @ngrx/effects --save</div>
+								<div>npm install @ngrx/router-store --save</div>
+								<div>npm install @ngrx/store-devtools --save</div>
+								<div>npm install ngrx-store-freeze --save</div>
+							</li>
+							<li>
+								Register NgRx with AppModule (app.module.ts)
+								<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+								imports: [
+									...
+									...
+									StoreModule.forRoot({ router: routerReducer }, 
+										{ metaReducers: !environment.production ? [storeFreeze] : [] }),
+									EffectsModule.forRoot([]),
+									!environment.production ? StoreDevtoolsModule.instrument() : [],
+									StoreRouterConnectingModule,
+								],
+								providers: [{ provide: RouterStateSerializer, useClass: CustomSerializer }],
+								
+							</code></pre>
+							</li>
+						</ol>
+					</small>
+				</section>
+				<section>
+					<h5>Project setup (meta-reducers)</h5>
+					<small>
+						A meta-reducer is a higher order function that receives a reducer (function) as parameter and returns a new reducer(function).
+
+						<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+							export function freeze(reducer: ActionReducer<any>): ActionReducer<any> {
+								return function(state, action) {
+									const nextState = reducer(state, action);
+									Object.freeze(nextState);
+									return nextState;
+								}
+							}
+									
+							@NgModule({
+							imports: [
+								StoreModule.forRoot(freeze(reducer))
+							]
+							})
+							export class AppModule {}
+		
+							// running this in console we get 
+							// 'Uncaught TypeError: Cannot assign to read only property 'test1''
+							(function()
+							{
+								'use strict';
+								console.log("FUN_1:");
+								let test = {test1: 'aha'};
+								test.test1 = 2; 
+									
+								Object.freeze(test); 
+								test.test1 = 1;  
+							}());
+						</code></pre>
+					</small>
+				</section>
+				<section>
+					<h5>Project setup (router-store)</h5>
+					<small>During each navigation cycle, a ROUTER_NAVIGATION || ROUTER_CANCEL || ROUTER_ERROR action is dispatched with a snapshot
+						of the state in its payload, the SerializedRouterStateSnapshot.
+					</small>
+					<small>
+						<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+							export interface SerializedRouterStateSnapshot {
+								root: ActivatedRouteSnapshot;
+								url: string;
+							}
+						</code></pre>
+					</small>
+				</section>
+				<section>
+					<h5>Project setup (router-store)</h5>
+					<small>The
+						<a href="https://angular.io/api/router/ActivatedRouteSnapshot" target="_blank">ActivatedRouteSnapshot</a>
+						is a large complex structure. This can cause performance issues when used with the Store Devtools. In most cases, we need
+						a piece of information from the ActivatedRouteSnapshot. Additionally, the router state snapshot is a mutable object,
+						which can cause issues when developing with store freeze. We can override the default serializer with a custom serializer.</small>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+								export interface RouterStateUrl {
+									url: string;
+									params: Params;
+									queryParams: Params;
+								}
+								  
+								export interface State {
+									router: RouterReducerState<RouterStateUrl>;
+								}
+								  
+								export class CustomSerializer implements RouterStateSerializer<RouterStateUrl> {
+									serialize(routerState: RouterStateSnapshot): RouterStateUrl {
+										let route = routerState.root;
+									
+										while (route.firstChild) {
+											route = route.firstChild;
+										}
+									
+										const { url, root: { queryParams } } = routerState;
+										const { params } = route;
+									
+										return { url, params, queryParams };
+									}
+								}	
+						</code></pre>
+				</section>
+			</section>
+			<section>
+				<h5>store-devtools, time travel debugging</h5>
+				<small>From debug prepsective, we care about two things
+					<ol>
+						<li>Trace the actions were dispatched</li>
+						<li>The impact of this actions to the store</li>
+					</ol>
+					<p>We can conrtol time in our store by replaying dispatched actions.</p>
+					<img class="plain" data-src="/images/time-travel.png">
+				</small>
+			</section>
+			<section>
+				<h5>Use case: Implement authentication with NgRx</h5>
+				<small>
+					<p>
+						Here are our goals:
+					</p>
+					<ol>
+						<li>
+							Show elements depending on a user being logged in or not
+						</li>
+						<li>
+							Make routes unavailable if a user shouldn’t have access to them
+						</li>
+						<li>
+							Handle unauthorized (Status 401) response
+						</li>
+						<li>
+							Handle authentication lifecycle
+						</li>
+					</ol>
+					<p>Let's see some examples of these requirements in the
+						<a href="https://stefanos-.github.io/angular-ngrx-nx-realworld-example-app/#/" target="_blank">demo</a>
+					</p>
+				</small>
+			</section>
+			<section>
+				<h5>Authentication with NgRx</h5>
+				<small>
+					<ol>
+						<div class="flex-row">
+							<li>
+								Create the State interface (libs/src/+state/auth.interfaces.ts):
+								<pre style="margin-left: 0"><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+								export interface Auth {
+									loggedIn: boolean;
+									user: User;
+									status: Status;
+								}
+								  
+								export interface AuthState {
+									readonly auth: Auth;
+								}
+								  
+								export interface User {
+									email: string;
+									token: string;
+									username: string;
+									bio: string;
+									image: string;
+								}
+
+								export type Status = 'INIT' | 'IN_PROGRESS';
+						</code></pre>
+							</li>
+							<li>
+								Initialize the state (libs/src/+state/auth.init.ts):
+								<pre style="margin-left: 0"><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+									export const authInitialState: Auth = {
+										loggedIn: false,
+										status: 'INIT',
+										user: {
+										  email: '',
+										  token: '',
+										  username: '',
+										  bio: '',
+										  image: ''
+										}
+									  };
+							</code></pre>
+							</li>
+						</div>
+					</ol>
+				</small>
+			</section>
+			<section>
+				<h5>Fractal state management</h5>
+				<small>
+					<ul>
+						<li>
+							In our app architecture we want to follow the seperation of concerns pronciple (reducers=>business logic, effects=>side effects,
+							smart-dump components)
+						</li>
+						<li>
+							Things that have to do only with the authentication of our app should be isolated and decoupled. We have a module(lib) that
+							encapsulates and abstracts all these related things
+						</li>
+						<li>
+							We have
+							<b>feature</b> modules and each one of them contributes to the global state
+						</li>
+						<li>
+							NgRx provides us with a method called "forFeature()" that allows us to add the feature state to the global app state once
+							the feature is loaded(eagerly, lazily).
+						</li>
+					</ul>
+				</small>
+			</section>
+			<section>
+				<h5>Authentication with NgRx</h5>
+				<small>
+					<p>
+						3. Next we create the reducer and register it to the module (libs/src/+state/auth.reducer.ts).
+					</p>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+						// (libs/src/+state/auth.reducer.ts)
+						export function authReducer(state: Auth, action: AuthAction): Auth {
+							switch (action.type) {
+								default: {
+									return state;
+								}
+							}
+					</code></pre>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+						// (libs/src/auth.module.ts)
+						imports: [
+							...
+							StoreModule.forFeature('auth', authReducer, { initialState: authInitialState })
+						]
+					</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>Authentication with NgRx</h5>
+				<small>
+					<p>Our world until now was synchronous.</p>
+					<p>Generally, NgRx promotes functional programming. Reducers, selectors, RxJS operators are pure functions. This means
+						that they produce no side effects. </p>
+					<p>But, side effects are impossible to avoid. We can isolate side effects (http calls, read from a file, write to localStorage)
+						through ngrx/effects so that the rest of our ngrx implementation be composed of pure functions.</p>
+
+					<ol>
+						Effects:
+						<li>Listen for actions dispatched from @ngrx/store</li>
+						<li>Isolate side effects from components, allowing for more pure components that select state and dispatch actions</li>
+						<li>Provide a new action to reduce state based on external interactions such as network requests, web socket messages and
+							time-based events.</li>
+					</ol>
+				</small>
+			</section>
+			<section>
+				<h5>Authentication with NgRx</h5>
+				<small>
+					<p>
+						4. Next we create the effects class and register it to the module (libs/src/+state/auth.effects.ts).
+					</p>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+						// (libs/src/+state/auth.effects.ts)
+						@Injectable()
+						export class AuthEffects {
+							@Effect()
+							getUser ...
+						}
+
+					</code></pre>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+							// (libs/src/auth.module.ts)
+							imports: [
+								...
+								StoreModule.forFeature('auth', authReducer, { initialState: authInitialState }),
+								EffectsModule.forFeature([AuthEffects])
+							]
+						</code></pre>
+					<a href="https://github.com/vsavkin/composing-ngrxstore-reducers/blob/master/src/lazy2/index.ts" target="_blank">lazy modules with ngrx v2</a>
+				</small>
+			</section>
+			<section>
+				<h5>Configure Login</h5>
+				<small>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+							// (libs/auth/src/login/login.component.ts)
+							submit() {
+								this.store.dispatch(new fromActions.Login());
+							}
+
+							// (libs/auth/src/+state/auth.actions.ts)
+							import { Action } from '@ngrx/store';
+							export const enum AuthActionTypes {
+								LOGIN = '[auth] LOGIN',
+								LOGIN_SUCCESS = '[auth] LOGIN_SUCCESS',
+								LOGIN_FAIL = '[auth] LOGIN_FAIL'
+								...
+							}
+					</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>Configure Login</h5>
+				<small>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+						// (libs/auth/src/+state/auth.effects.ts)
+						@Effect()
+						login = this.actions.ofType<Login>(AuthActionTypes.LOGIN).pipe(
+							withLatestFrom(this.store.select(fromNgrxForms.getData)),
+							exhaustMap(([action, data]) =>
+								this.authService.authUser('LOGIN', data).pipe(
+									map(result => new fromActions.LoginSuccess(result.user)),
+									catchError(result => of(new fromNgrxForms.SetErrors(result.error.errors)))
+								)
+							)
+						);
+					</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>Configure Login</h5>
+				<small>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+					// (libs/auth/src/+state/auth.reducers.ts)
+					
+					export function authReducer(state: Auth, action: AuthAction): Auth {
+						switch (action.type) {case AuthActionTypes.LOGIN:
+							...
+							case AuthActionTypes.REGISTER: {
+								return { ...state, status: 'IN_PROGRESS' };
+							}
+							case AuthActionTypes.REGISTER_SUCCESS:
+							case AuthActionTypes.LOGIN_SUCCESS: {
+								return {
+									...state,
+									loggedIn: true,
+									status: 'INIT',
+									user: action.payload
+								};
+							}
+							case AuthActionTypes.LOGIN_FAIL:
+							case AuthActionTypes.REGISTER_FAIL: {
+								return { ...state, status: 'INIT' };
+							}
+							...
+					</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>Configure Login</h5>
+				<small>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+				@Effect({ dispatch: false })
+				loginRegisterSuccess =
+					this.actions.ofType<LoginSuccess | RegisterSuccess>(AuthActionTypes.LOGIN_SUCCESS, AuthActionTypes.REGISTER_SUCCESS).pipe(
+						tap(action => {
+							this.localStorageJwtService.setItem(action.payload.token);
+							this.router.navigateByUrl('/');
+						})
+					);	
+					</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>Show elements depending on a user being logged in or not</h5>
+				<small>
+					<p>Selectors are just functions, that allow us, to get only the part of the application state, that we are interested in.Because
+						selectors are pure functions, the last result can be returned when the arguments match without reinvoking your selector
+						function. This can provide performance benefits.
+					</p>
+					<pre><code class="hljs typescript" style="line-height: 1.3em;font-size: 20px; tab-size: 2;" data-noescape data-trim contenteditable>
+						export const getAuth = createFeatureSelector<Auth>('auth');
+						export const getLoggedIn = createSelector(getAuth, (auth: Auth) => auth.loggedIn);
+						export const getUser = createSelector(getAuth, (auth: Auth) => auth.user);
+					</code></pre>
+				</small>
+			</section>
+			<section>
+				<h5>
+					When to use NgRx
+				</h5>
+				<small style="text-align: left">
+					<p>A mnemonic from Mike Ryan and Brandon Robert @ ng-conf</p>
+					<div>
+						<b style="font-size: 26px">S</b> hared state between components (Authentication)</div>
+					<div>
+						<b style="font-size: 26px">H</b> ydrated state from storage</div>
+					<div>
+						<b style="font-size: 26px">A</b> vailable state when re-entering routes</div>
+					<div>
+						<b style="font-size: 26px">R</b> etrieved state with a side effect</div>
+					<div>
+						<b style="font-size: 26px">I</b> mpacted state that is changed from other components or services</div>
+
+					<p>and also...</p>
+					<div>Optimistic updates </div>
+					<div>Undo/Redo logic </div>
+					<div>OnPush change detection strategy</div>
+
+				</small>
+			</section>
+			<section>
+				<h3>Thank you!</h3>
+			</section>
+		</div>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		Reveal.configure({ pdfMaxPagesPerSlide: 1 })
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			history: true,
+			center: true,
+
+			transition: 'slide',
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/zoom-js/zoom.js', async: true },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
+</html>
